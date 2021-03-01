@@ -15,8 +15,55 @@ from morse_dict import MORSE_2_ASCII
 
 
 def decode_bits(bits):
-    # your code here
-    return
+    bits.replace("0", " ")  # so that way we can remove whitespace from ends
+    bits = bits.strip()  # remove whitespace from ends of bits
+
+    counts = []  # set empty list to later get min num of spaces in a row
+    count = 0  # set count to default zero
+
+    for char in bits:
+        if char == " ":
+            count += 1
+        elif char == "1":
+            counts.append(count)
+            count = 0
+
+    time_multiplier = min(counts)
+    """get min num of spaces in a row set as time
+    unit multiplier"""
+
+    ones_count = 0
+    zeros_count = 0
+    morse_chars = ""  # set empty string for morse message to be added to
+
+    for i, num_char in enumerate(bits):
+        if num_char == "1" and bits[i] != bits[-1]:
+            if zeros_count // time_multiplier == 3:
+                morse_chars += " "
+            elif zeros_count // time_multiplier == 7:
+                morse_chars += "   "
+            zeros_count = 0
+            ones_count += 1
+        elif num_char == "1" and bits[i] == bits[-1]:
+            if zeros_count // time_multiplier == 3:
+                morse_chars += " "
+            elif zeros_count // time_multiplier == 7:
+                morse_chars += "   "
+            zeros_count = 0
+            ones_count += 1
+            if ones_count // time_multiplier == 1:
+                morse_chars += "."
+            elif ones_count // time_multiplier == 3:
+                morse_chars += "-"
+        elif num_char == " ":
+            if ones_count // time_multiplier == 1:
+                morse_chars += "."
+            elif ones_count // time_multiplier == 3:
+                morse_chars += "-"
+            ones_count = 0
+            zeros_count += 1
+
+    return morse_chars
 
 
 def decode_morse(morse):
