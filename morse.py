@@ -21,17 +21,23 @@ def decode_bits(bits):
 
 def decode_morse(morse):
     morse = morse.strip()
+    """remove potential white spaces from either
+    end of message"""
+    # break up message by words (3 spaces in morse)
     morse_words_list = morse.split("   ")
 
-    actual_words = ""
+    actual_words = ""  # set empty string for words that will be added
 
-    for words in morse_words_list:
+    for words in morse_words_list:  # loop through all encoded words
+        # break up words by character (1 space between each character in morse)
         chars_list = words.split(" ")
         actual_chars = ""
-        for dots_dashes in chars_list:
+        """set empty string for characters that will be
+        added to the word"""
+        for dots_dashes in chars_list:  # loop through each encoded character
             actual_chars += MORSE_2_ASCII[dots_dashes]
         actual_words += actual_chars + " "
-    return actual_words.strip()
+    return actual_words.strip()  # remove final white space from end of words
 
 
 if __name__ == '__main__':
