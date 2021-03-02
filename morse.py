@@ -13,55 +13,84 @@ __author__ = 'Benjamin Feder'
 
 from morse_dict import MORSE_2_ASCII
 
+# from itertools import groupby
+
 
 def decode_bits(bits):
-    bits.replace("0", " ")  # so that way we can remove whitespace from ends
-    bits = bits.strip()  # remove whitespace from ends of bits
+    bits = bits.strip("0")  # remove whitespace from ends of bits
 
     counts = []  # set empty list to later get min num of spaces in a row
     count = 0  # set count to default zero
 
+    last_bit = "1"
+
+    # for i, char in enumerate(bits):
+    #     if char == "0" and bits[i-1] != "1":
+    #         count += 1
+    #     elif char == "1" and bits[i-1] == "0":
+    #         counts.append(count)
+    #         count = 1
+    #     elif char == "0" and bits[i-1] == "1":
+    #         counts.append(count)
+    #         count = 1
+    #     elif char == "1" and bits[i-1] != "0":
+    #         count += 1
+
     for char in bits:
-        if char == " ":
-            count += 1
-        elif char == "1":
+        if char != last_bit:
             counts.append(count)
             count = 0
+            last_bit = char
+        count += 1
+
+    counts.append(count)
 
     time_multiplier = min(counts)
     """get min num of spaces in a row set as time
     unit multiplier"""
 
-    ones_count = 0
-    zeros_count = 0
+    # ones_count = 0
+    # zeros_count = 0
     morse_chars = ""  # set empty string for morse message to be added to
 
-    for i, num_char in enumerate(bits):
-        if num_char == "1" and bits[i] != bits[-1]:
-            if zeros_count // time_multiplier == 3:
-                morse_chars += " "
-            elif zeros_count // time_multiplier == 7:
-                morse_chars += "   "
-            zeros_count = 0
-            ones_count += 1
-        elif num_char == "1" and bits[i] == bits[-1]:
-            if zeros_count // time_multiplier == 3:
-                morse_chars += " "
-            elif zeros_count // time_multiplier == 7:
-                morse_chars += "   "
-            zeros_count = 0
-            ones_count += 1
-            if ones_count // time_multiplier == 1:
+    # for i, num_char in enumerate(bits):
+    #     if num_char == "1" and i != len(bits) - 1:
+    #         if zeros_count // time_multiplier == 3:
+    #             morse_chars += " "
+    #         elif zeros_count // time_multiplier == 7:
+    #             morse_chars += "   "
+    #         zeros_count = 0
+    #         ones_count += 1
+    #     elif num_char == "1" and i == len(bits) - 1:
+    #         if zeros_count // time_multiplier == 3:
+    #             morse_chars += " "
+    #         elif zeros_count // time_multiplier == 7:
+    #             morse_chars += "   "
+    #         zeros_count = 0
+    #         ones_count += 1
+    #         if ones_count // time_multiplier == 1:
+    #             morse_chars += "."
+    #         elif ones_count // time_multiplier == 3:
+    #             morse_chars += "-"
+    #     elif num_char == "0":
+    #         if ones_count // time_multiplier == 1:
+    #             morse_chars += "."
+    #         elif ones_count // time_multiplier == 3:
+    #             morse_chars += "-"
+    #         ones_count = 0
+    #         zeros_count += 1
+
+    for i, count in enumerate(counts):
+        if i % 2 == 0:
+            if count // time_multiplier == 1:
                 morse_chars += "."
-            elif ones_count // time_multiplier == 3:
+            elif count // time_multiplier == 3:
                 morse_chars += "-"
-        elif num_char == " ":
-            if ones_count // time_multiplier == 1:
-                morse_chars += "."
-            elif ones_count // time_multiplier == 3:
-                morse_chars += "-"
-            ones_count = 0
-            zeros_count += 1
+        else:
+            if count // time_multiplier == 3:
+                morse_chars += " "
+            elif count // time_multiplier == 7:
+                morse_chars += "   "
 
     return morse_chars
 
